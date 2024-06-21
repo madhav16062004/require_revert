@@ -21,7 +21,7 @@ This project is a Ethereum based smart contract coded in soldity which succesful
 * Copy and Paste the program
 * Click solidity compiler in the left side panel and compile the program
 * Click Deploy & run transactions in the left side panel and Deploy the program
-* Use the provided functions to mint or burn tokens.
+* Use the provided functions to transfer and withdraw tokens.
 ```
 // To Transfer tokens
 transfer(uint amount)
