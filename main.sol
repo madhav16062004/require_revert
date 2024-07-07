@@ -1,33 +1,41 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-contract Project {
-    mapping (address => uint) public balance;
-    address owner;
+contract RailwaysTicketCheckingSystem {
+    address public owner;
+    uint256 public ticketCount;
+    mapping(uint256 => bool) public tickets;
+    
     constructor() {
         owner = msg.sender;
     }
 
-    function transfer(uint amount) public payable  {
-        require(amount > 10 ,"Amount must be greater than 10");
-        balance[owner] +=amount;
-        
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can perform this action");
+        _;
     }
-    error InsufficientBalance(uint balances);
 
-    function withdraw(uint _amount) public payable  {
-        if(balance[owner]<_amount){
-           revert InsufficientBalance({balances: balance[owner]});
+    function mintTicket() public onlyOwner returns (uint256) {
+        ticketCount++;
+        tickets[ticketCount] = true;
+        return ticketCount;
+    }
+    error invalidticket(uint ticketid, uint ticketcount);
+
+    function checkTicket(uint256 ticketId) public view returns (bool) {
+        if(ticketId < 0 && ticketId > ticketCount){
+            revert invalidticket({ticketid: ticketId,ticketcount: ticketCount});
         }
-    balance[owner] -= _amount;
-
-    }
-    
-    function check_balance() public view returns(uint)  {
-        assert(owner == msg.sender);
-        return balance[owner];
+        return tickets[ticketId];
     }
 
-    
-    
+    function invalidateTicket(uint256 ticketId) public onlyOwner {
+        if(ticketId < 0 && ticketId > ticketCount){
+            revert invalidticket({ticketid: ticketId,ticketcount: ticketCount});
+        }
+        assert(tickets[ticketId] == true);
+        
+        tickets[ticketId] = false;
+    }
 }
+
